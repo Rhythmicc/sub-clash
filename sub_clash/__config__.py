@@ -31,7 +31,7 @@ class sub_clashConfig:
     def select(self, key):
         if key not in self.config and key in questions:
             self.update(key, _ask(questions[key]))
-        return self.config[key]
+        return self.config.get(key, None)
 
     def update(self, key, value):
         if not value and key in self.config:
