@@ -11,3 +11,5 @@ pip3 install git+https://github.com/Rhythmicc/sub-clash.git -U
 ```shell
 sub-clash --help
 ```
+
+推荐订阅转换：https://nexconvert.com/ （选择多国家版）
