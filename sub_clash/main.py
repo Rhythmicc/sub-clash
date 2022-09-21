@@ -114,6 +114,8 @@ def complete():
         )
         QproDefaultConsole.print(QproInfoString, "补全脚本生成并应用成功")
 
+        requirePackage("QuickStart_Rhy", "remove")("complete")
+
 
 def main():
     """
