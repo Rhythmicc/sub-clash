@@ -1,0 +1,16 @@
+{
+  "build": "",
+  "entry_point": "sub_clash/main.py",
+  "executable": "python3 -m sub_clash.main",
+  "input_file": "",
+  "template_root": "",
+  "server_targets": [
+    {
+      "user": "",
+      "host": "",
+      "port": 22,
+      "path": ""
+    }
+  ],
+  "enable_complete": true
+}
