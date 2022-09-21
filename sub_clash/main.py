@@ -43,6 +43,11 @@ def update(name: str):
 
 @app.command()
 def register(name: str):
+    """
+    添加机场
+
+    :param name: 机场名
+    """
     from . import _ask
 
     cur_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "airports")
@@ -81,6 +86,11 @@ def register(name: str):
 
 @app.command()
 def unregister(name: str):
+    """
+    删除机场
+
+    :param name: 机场名
+    """
     from . import _ask
 
     cur_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "airports")
