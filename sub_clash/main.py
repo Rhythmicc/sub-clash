@@ -43,12 +43,12 @@ def register(name: str):
         os.mkdir(cur_path)
     airports = os.listdir(cur_path)
 
-    if (name in airports or name in config) and _ask(
+    if (name in airports or config.select(name)) and _ask(
         {"type": "confirm", "message": "此机场已注册, 是否覆盖?", "default": False}
     ):
         remove = requirePackage("QuickStart_Rhy", "remove")
         remove(os.path.join(airports, f"{name}.py"))
-        config.pop(name, None)
+        config.update(name, None)
 
     values = {
         "url": _ask({"type": "input", "message": "输入机场订阅链接"}),
