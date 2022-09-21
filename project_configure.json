@@ -6,10 +6,10 @@
   "template_root": "",
   "server_targets": [
     {
-      "user": "",
-      "host": "",
+      "user": "lianhaocheng",
+      "host": "localhost",
       "port": 22,
-      "path": ""
+      "path": "/opt/homebrew/lib/python3.10/site-packages/"
     }
   ],
   "enable_complete": true

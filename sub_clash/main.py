@@ -24,14 +24,18 @@ def update(name: str):
     if not os.path.exists(".tmp.yaml"):
         requirePackage(
             "QuickStart_Rhy.NetTools.NormalDL", "normal_dl", real_name="QuickStart_Rhy"
-        )(config[name]["url"], ".tmp.yaml")
+        )(config.select(name)["url"], ".tmp.yaml")
 
-    if config[name]["custom_format"]:
+    if config.select(name)["custom_format"]:
         with open(".tmp.yaml", "r") as f:
             clash_config = yaml.load(f, Loader=yaml.FullLoader)
         requirePackage(f".airports.{name}", "format_proxies")(clash_config)
         with open(".tmp.yaml", "w") as f:
             yaml.dump(clash_config, f, allow_unicode=True)
+    requirePackage(
+        "QuickStart_Rhy.API.TencentCloud", "TxCOS", real_name="QuickStart_Rhy"
+    )().upload(".tmp.yaml", key=config.select(name)["key"])
+    os.remove(".tmp.yaml")
 
 
 @app.command()
