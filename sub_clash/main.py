@@ -35,7 +35,9 @@ def update(name: str):
     requirePackage(
         "QuickStart_Rhy.API.TencentCloud", "TxCOS", real_name="QuickStart_Rhy"
     )().upload(".tmp.yaml", key=config.select(name)["key"])
-    
+    QproDefaultConsole.print(
+        QproInfoString, "更新成功，已上传至腾讯云COS:", config.select(name)["key"]
+    )
     os.remove(".tmp.yaml")
 
 
