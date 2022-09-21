@@ -1,5 +1,7 @@
 <h1 style="text-align: center"> sub-clash </h1>
 
+![demo](https://cos.rhythmlian.cn/ImgBed/5aabc7d793a9235387d78f4ad1107391.png)
+
 ## Install
 
 ```shell
