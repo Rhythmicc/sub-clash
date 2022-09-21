@@ -67,7 +67,7 @@ def register(name: str):
         values["custom_format"] = os.path.abspath(values["custom_format"])
         import shutil
 
-        shutil.copy(values["custom_format"], os.path.join(cur_path, name))
+        shutil.copy(values["custom_format"], os.path.join(cur_path, f"{name}.py"))
         values["custom_format"] = True
     elif values["custom_format"]:
         from QuickProject import QproErrorString
