@@ -41,7 +41,7 @@ def register(name: str):
     cur_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "airports")
     if not os.path.exists(cur_path):
         os.mkdir(cur_path)
-    airports = os.listdir(os.path.join(cur_path, "airports"))
+    airports = os.listdir(cur_path)
 
     if (name in airports or name in config) and _ask(
         {"type": "confirm", "message": "此机场已注册, 是否覆盖?", "default": False}
