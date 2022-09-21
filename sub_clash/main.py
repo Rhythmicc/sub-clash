@@ -106,7 +106,7 @@ def complete():
         import shutil
 
         shutil.copyfile(
-            "complete/fig/sub-clash.fig",
+            "complete/fig/sub-clash.ts",
             os.path.join(user_root, ".fig/autocomplete/src/sub-clash.ts"),
         )
         QproDefaultConsole.print(QproInfoString, "补全脚本生成并应用成功")
