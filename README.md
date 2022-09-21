@@ -34,7 +34,7 @@ sub-clash --help
               "url": "http://www.gstatic.com/generate_204",
           }
       )
-      yaml["proxy-groups"][0]["proxies"].append("🇸🇬 狮城节点")
+      yaml["proxy-groups"][0]["proxies"].insert(-2, "🇸🇬 狮城节点")
       for item in yaml["proxy-groups"]:
           if item["name"] != "🌍 国外媒体":
               continue
