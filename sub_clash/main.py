@@ -21,10 +21,12 @@ def update(name: str):
     """
     import yaml
 
-    if not os.path.exists(".tmp.yaml"):
-        requirePackage(
-            "QuickStart_Rhy.NetTools.NormalDL", "normal_dl", real_name="QuickStart_Rhy"
-        )(config.select(name)["url"], ".tmp.yaml")
+    if os.path.exists(".tmp.yaml"):
+        os.remove(".tmp.yaml")
+
+    requirePackage(
+        "QuickStart_Rhy.NetTools.NormalDL", "normal_dl", real_name="QuickStart_Rhy"
+    )(config.select(name)["url"], ".tmp.yaml")
 
     if config.select(name)["custom_format"]:
         with open(".tmp.yaml", "r") as f:
