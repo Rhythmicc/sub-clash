@@ -117,15 +117,8 @@ def complete():
         from QuickProject.Qpro import gen_complete
 
         gen_complete("sub-clash")
-
-        import shutil
-
-        shutil.copyfile(
-            "complete/fig/sub-clash.ts",
-            os.path.join(user_root, ".fig/autocomplete/src/sub-clash.ts"),
-        )
+        external_exec("npx @fig/publish-spec --spec-path complete/fig/sub-clash.ts")
         QproDefaultConsole.print(QproInfoString, "补全脚本生成并应用成功")
-
         requirePackage("QuickStart_Rhy", "remove")("complete")
 
 
