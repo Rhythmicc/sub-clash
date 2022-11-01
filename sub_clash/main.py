@@ -1,7 +1,7 @@
 from QuickProject.Commander import Commander
 from . import *
 
-app = Commander()
+app = Commander(name)
 
 
 @app.custom_complete("name")
