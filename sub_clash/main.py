@@ -28,6 +28,11 @@ def update(name: str):
         "QuickStart_Rhy.NetTools.NormalDL", "normal_dl", real_name="QuickStart_Rhy"
     )(config.select(name)["url"], ".tmp.yaml")
 
+    with open(".tmp.yaml", "r") as f:
+        content = f.read()
+    with open(".tmp.yaml", "w") as f:
+        f.write(content.replace("!<str> ", ""))
+
     if config.select(name)["custom_format"]:
         with open(".tmp.yaml", "r") as f:
             clash_config = yaml.load(f, Loader=yaml.FullLoader)
