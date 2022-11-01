@@ -104,24 +104,6 @@ def unregister(name: str):
         QproDefaultConsole.print(QproInfoString, "删除成功")
 
 
-@app.command()
-def complete():
-    """
-    生成补全脚本，并应用fig至.fig/autocomplete/src/
-    """
-    from . import _ask
-
-    if _ask(
-        {"type": "confirm", "message": "此操作会创建complete文件夹, 是否继续?", "default": False}
-    ):
-        from QuickProject.Qpro import gen_complete
-
-        gen_complete("sub-clash")
-        external_exec("npx @fig/publish-spec --spec-path complete/fig/sub-clash.ts")
-        QproDefaultConsole.print(QproInfoString, "补全脚本生成并应用成功")
-        requirePackage("QuickStart_Rhy", "remove")("complete")
-
-
 def main():
     """
     注册为全局命令时, 默认采用main函数作为命令入口, 请勿将此函数用作它途.
