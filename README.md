@@ -1,4 +1,4 @@
-<h1 style="text-align: center"> sub-clash </h1>
+# sub-clash
 
 ![demo](https://cos.rhythmlian.cn/ImgBed/5aabc7d793a9235387d78f4ad1107391.png)
 
@@ -14,7 +14,7 @@ pip3 install git+https://github.com/Rhythmicc/sub-clash.git -U
 sub-clash --help
 ```
 
-- 推荐订阅转换：https://nexconvert.com/ （选择多国家版）
+- 推荐订阅转换：<https://nexconvert.com/> （选择多国家版）
 
 - 如需自定义规则，你需要编写一个 python 脚本，在其内部定义一个`format_proxies`函数。
 
