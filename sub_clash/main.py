@@ -13,20 +13,27 @@ def update():
 
 
 @app.command()
-def update(name: str):
+def update(name: str, force: bool = False, no_delete: bool = False):
     """
     更新Clash订阅
 
     :param name: 机场名
+    :param force: 强制更新
+    :param no_delete: 不删除临时文件
     """
     import yaml
 
-    if os.path.exists(".tmp.yaml"):
+    if os.path.exists(".tmp.yaml") and force:
         os.remove(".tmp.yaml")
 
-    requirePackage(
+    res = requirePackage(
         "QuickStart_Rhy.NetTools.NormalDL", "normal_dl", real_name="QuickStart_Rhy"
     )(config.select(name)["url"], ".tmp.yaml")
+
+    if not res and not os.path.exists(".tmp.yaml"):
+        from QuickProject import QproErrorString
+
+        return QproDefaultConsole.print(QproErrorString, "下载失败")
 
     with open(".tmp.yaml", "r") as f:
         content = f.read()
@@ -45,6 +52,8 @@ def update(name: str):
     QproDefaultConsole.print(
         QproInfoString, "更新成功，已上传至腾讯云COS:", config.select(name)["key"]
     )
+    if no_delete:
+        return
     os.remove(".tmp.yaml")
 
 
