@@ -46,9 +46,10 @@ def update(name: str, force: bool = False, no_delete: bool = False):
         requirePackage(f".airports.{name}", "format_proxies")(clash_config)
         with open(".tmp.yaml", "w") as f:
             yaml.dump(clash_config, f, allow_unicode=True)
-    requirePackage(
-        "QuickStart_Rhy.API.TencentCloud", "TxCOS", real_name="QuickStart_Rhy"
-    )().upload(".tmp.yaml", key=config.select(name)["key"])
+    with QproDefaultStatus("Uploading..." if user_lang != "zh" else "正在上传..."):
+        requirePackage(
+            "QuickStart_Rhy.API.TencentCloud", "TxCOS", real_name="QuickStart_Rhy"
+        )().upload(".tmp.yaml", key=config.select(name)["key"])
     QproDefaultConsole.print(
         QproInfoString, "更新成功，已上传至腾讯云COS:", config.select(name)["key"]
     )

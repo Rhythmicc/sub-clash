@@ -9,7 +9,13 @@ if enable_config:
     config = sub_clashConfig()
 
 import sys
-from QuickProject import user_pip, _ask, external_exec, QproErrorString
+from QuickProject import (
+    user_pip,
+    _ask,
+    external_exec,
+    QproErrorString,
+    QproDefaultStatus,
+)
 
 
 def requirePackage(
@@ -45,9 +51,7 @@ def requirePackage(
                 "default": True,
             }
         ):
-            with QproDefaultConsole.status(
-                "Installing..." if user_lang != "zh" else "正在安装..."
-            ):
+            with QproDefaultStatus("Installing..." if user_lang != "zh" else "正在安装..."):
                 st, _ = external_exec(
                     f"{set_pip} install {pname if not real_name else real_name} -U",
                     True,
