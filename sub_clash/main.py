@@ -102,6 +102,57 @@ def register(name: str):
 
 
 @app.command()
+def justify(
+    name: str,
+    url: bool = False,
+    key: bool = False,
+    show_name: bool = False,
+    custom_format: bool = False,
+):
+    """
+    修改机场配置
+
+    :param name: 机场名
+    :param url: 修改订阅链接
+    :param key: 修改腾讯云存储位置
+    :param show_name: 修改机场描述信息
+    :param custom_format: 修改自定义格式化文件路径
+    """
+    from . import _ask
+
+    if not (item := config.select(name)):
+        from QuickProject import QproErrorString
+
+        return QproDefaultConsole.print(QproErrorString, "机场不存在")
+    if url:
+        item["url"] = _ask(
+            {"type": "input", "message": "输入机场订阅链接", "default": item["url"]}
+        )
+    if key:
+        item["key"] = _ask(
+            {"type": "input", "message": "输入腾讯云对应存储位置", "default": item["key"]}
+        )
+    if show_name:
+        item["show_name"] = _ask(
+            {"type": "input", "message": "输入机场描述信息", "default": item["show_name"]}
+        )
+    if custom_format:
+        item["custom_format"] = _ask(
+            {
+                "type": "input",
+                "message": "输入自定义格式化文件路径（跳过则不配置）",
+                "default": item["custom_format"],
+            }
+        )
+        import shutil
+
+        cur_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "airports")
+        shutil.copy(item["custom_format"], os.path.join(cur_path, f"{name}.py"))
+        item["custom_format"] = True
+    config.update(name, item)
+
+
+@app.command()
 def unregister(name: str):
     """
     删除机场
