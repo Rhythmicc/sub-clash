@@ -28,7 +28,7 @@ def update(name: str, force: bool = False, no_delete: bool = False):
 
     res = requirePackage(
         "QuickStart_Rhy.NetTools.NormalDL", "normal_dl", real_name="QuickStart_Rhy"
-    )(config.select(name)["url"], ".tmp.yaml")
+    )(config.select(name)["url"], ".tmp.yaml", ignore_404=True)
 
     if not res and not os.path.exists(".tmp.yaml"):
         from QuickProject import QproErrorString
