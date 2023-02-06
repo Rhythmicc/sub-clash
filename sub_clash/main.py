@@ -45,7 +45,14 @@ def update(name: str, force: bool = False, no_delete: bool = False):
             clash_config = yaml.load(f, Loader=yaml.FullLoader)
         requirePackage(f".airports.{name}", "format_proxies")(clash_config)
         with open(".tmp.yaml", "w") as f:
-            yaml.dump(clash_config, f, allow_unicode=True)
+            yaml.dump(
+                clash_config,
+                f,
+                allow_unicode=True,
+                indent=2,
+                default_flow_style=False,
+                sort_keys=False,
+            )
     with QproDefaultStatus("Uploading..." if user_lang != "zh" else "正在上传..."):
         requirePackage(
             "QuickStart_Rhy.API.TencentCloud", "TxCOS", real_name="QuickStart_Rhy"
