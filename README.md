@@ -1,6 +1,6 @@
 # sub-clash
 
-![demo](https://cos.rhythmlian.cn/ImgBed/5aabc7d793a9235387d78f4ad1107391.png)
+![demo](https://cos.rhythmlian.cn/ImgBed/02dbde94062c6ec8212f535be9588c42.png)
 
 ## Install
 
