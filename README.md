@@ -11,7 +11,7 @@ pip3 install git+https://github.com/Rhythmicc/sub-clash.git -U
 ## Usage
 
 ```shell
-sub-clash --help
+sub-clash
 ```
 
 - 推荐订阅转换：<https://nexconvert.com/> （选择多国家版）
@@ -106,133 +106,142 @@ def format_proxies(yaml: dict):
             if item["name"] == delele_item:
                 yaml["proxy-groups"].pop(_id)
                 break
-    yaml["proxy-groups"].append(
-        {
-            "name": "🇭🇰 香港",
-            "type": "select",
-            "proxies": ["🇭🇰 香港最佳", "🇭🇰 香港均衡"],
-        }
-    )
-    yaml["proxy-groups"].append(
-        {
-            "name": "🇯🇵 日本",
-            "type": "select",
-            "proxies": ["🇯🇵 日本最佳", "🇯🇵 日本均衡"],
-        }
-    )
-    yaml["proxy-groups"].append(
-        {
-            "name": "🇺🇲 美国",
-            "type": "select",
-            "proxies": ["🇺🇲 美国最佳", "🇺🇲 美国均衡"],
-        }
-    )
-    yaml["proxy-groups"].append(
-        {
-            "name": "🇸🇬 狮城",
-            "type": "select",
-            "proxies": ["🇸🇬 狮城最佳", "🇸🇬 狮城均衡"],
-        }
-    )
-    yaml["proxy-groups"].append(
-        {
-            "interval": 300,
-            "name": "🇸🇬 狮城最佳",
-            "proxies": [i for i in singapore],
-            "type": "url-test",
-            "url": "http://www.gstatic.com/generate_204",
-        },
-    )
-    yaml["proxy-groups"].append(
-        {
-            "interval": 300,
-            "name": "🇺🇲 美国最佳",
-            "proxies": [i for i in america],
-            "type": "url-test",
-            "url": "http://www.gstatic.com/generate_204",
-        },
-    )
-    yaml["proxy-groups"].append(
-        {
-            "interval": 300,
-            "name": "🇭🇰 香港最佳",
-            "proxies": [i for i in hongkong],
-            "type": "url-test",
-            "url": "http://www.gstatic.com/generate_204",
-        },
-    )
-    yaml["proxy-groups"].append(
-        {
-            "interval": 300,
-            "name": "🇯🇵 日本最佳",
-            "proxies": [i for i in japan],
-            "type": "url-test",
-            "url": "http://www.gstatic.com/generate_204",
-        },
-    )
+    if hongkong:
+        yaml["proxy-groups"].append(
+            {
+                "name": "🇭🇰 香港",
+                "type": "select",
+                "proxies": ["🇭🇰 香港最佳", "🇭🇰 香港均衡"],
+            }
+        )
+    if japan:
+        yaml["proxy-groups"].append(
+            {
+                "name": "🇯🇵 日本",
+                "type": "select",
+                "proxies": ["🇯🇵 日本最佳", "🇯🇵 日本均衡"],
+            }
+        )
+    if america:
+        yaml["proxy-groups"].append(
+            {
+                "name": "🇺🇲 美国",
+                "type": "select",
+                "proxies": ["🇺🇲 美国最佳", "🇺🇲 美国均衡"],
+            }
+        )
+    if singapore:
+        yaml["proxy-groups"].append(
+            {
+                "name": "🇸🇬 狮城",
+                "type": "select",
+                "proxies": ["🇸🇬 狮城最佳", "🇸🇬 狮城均衡"],
+            }
+        )
+    
+        yaml["proxy-groups"].append(
+            {
+                "interval": 300,
+                "name": "🇸🇬 狮城最佳",
+                "proxies": [i for i in singapore],
+                "type": "url-test",
+                "url": "http://www.gstatic.com/generate_204",
+            },
+        )
+    if america:
+        yaml["proxy-groups"].append(
+            {
+                "interval": 300,
+                "name": "🇺🇲 美国最佳",
+                "proxies": [i for i in america],
+                "type": "url-test",
+                "url": "http://www.gstatic.com/generate_204",
+            },
+        )
+    if hongkong:
+        yaml["proxy-groups"].append(
+            {
+                "interval": 300,
+                "name": "🇭🇰 香港最佳",
+                "proxies": [i for i in hongkong],
+                "type": "url-test",
+                "url": "http://www.gstatic.com/generate_204",
+            },
+        )
+    if japan:
+        yaml["proxy-groups"].append(
+            {
+                "interval": 300,
+                "name": "🇯🇵 日本最佳",
+                "proxies": [i for i in japan],
+                "type": "url-test",
+                "url": "http://www.gstatic.com/generate_204",
+            },
+        )
     # load-balance
-    yaml["proxy-groups"].append(
-        {
-            "name": "🇸🇬 狮城均衡",
-            "proxies": [i for i in singapore],
-            "type": "load-balance",
-            "strategy": "consistent-hashing",
-            "interval": 300,
-            "url": "http://www.gstatic.com/generate_204",
-        },
-    )
-    yaml["proxy-groups"].append(
-        {
-            "name": "🇺🇲 美国均衡",
-            "proxies": [i for i in america],
-            "type": "load-balance",
-            "strategy": "consistent-hashing",
-            "interval": 300,
-            "url": "http://www.gstatic.com/generate_204",
-        },
-    )
-    yaml["proxy-groups"].append(
-        {
-            "name": "🇭🇰 香港均衡",
-            "proxies": [i for i in hongkong],
-            "type": "load-balance",
-            "strategy": "consistent-hashing",
-            "interval": 300,
-            "url": "http://www.gstatic.com/generate_204",
-        },
-    )
-    yaml["proxy-groups"].append(
-        {
-            "name": "🇯🇵 日本均衡",
-            "proxies": [i for i in japan],
-            "type": "load-balance",
-            "strategy": "consistent-hashing",
-            "interval": 300,
-            "url": "http://www.gstatic.com/generate_204",
-        },
-    )
+    if singapore:
+        yaml["proxy-groups"].append(
+            {
+                "name": "🇸🇬 狮城均衡",
+                "proxies": [i for i in singapore],
+                "type": "load-balance",
+                "strategy": "consistent-hashing",
+                "interval": 300,
+                "url": "http://www.gstatic.com/generate_204",
+            },
+        )
+    if america:
+        yaml["proxy-groups"].append(
+            {
+                "name": "🇺🇲 美国均衡",
+                "proxies": [i for i in america],
+                "type": "load-balance",
+                "strategy": "consistent-hashing",
+                "interval": 300,
+                "url": "http://www.gstatic.com/generate_204",
+            },
+        )
+    if hongkong:
+        yaml["proxy-groups"].append(
+            {
+                "name": "🇭🇰 香港均衡",
+                "proxies": [i for i in hongkong],
+                "type": "load-balance",
+                "strategy": "consistent-hashing",
+                "interval": 300,
+                "url": "http://www.gstatic.com/generate_204",
+            },
+        )
+    if japan:
+        yaml["proxy-groups"].append(
+            {
+                "name": "🇯🇵 日本均衡",
+                "proxies": [i for i in japan],
+                "type": "load-balance",
+                "strategy": "consistent-hashing",
+                "interval": 300,
+                "url": "http://www.gstatic.com/generate_204",
+            },
+        )
     yaml["proxy-groups"][0]["proxies"] = [
         "♻️ 自动选择",
         "🚀 手动切换",
-        "🇭🇰 香港",
-        "🇸🇬 狮城",
-        "🇺🇲 美国",
-        "🇯🇵 日本",
     ]
+    if hongkong:
+        yaml["proxy-groups"][0]["proxies"].append("🇭🇰 香港")
+    if japan:
+        yaml["proxy-groups"][0]["proxies"].append("🇯🇵 日本")
+    if america:
+        yaml["proxy-groups"][0]["proxies"].append("🇺🇲 美国")
+    if singapore:
+        yaml["proxy-groups"][0]["proxies"].append("🇸🇬 狮城")
     if customize_rules:
         add_rules(yaml)
 
     for item in yaml["proxy-groups"]:
         if item["name"] == "🌍 国外媒体":
-            item["proxies"] = [
-                "🇸🇬 狮城",
-                "🇺🇲 美国",
-                "🇭🇰 香港",
-                "🇯🇵 日本",
-                "🚀 节点选择",
-                "♻️ 自动选择",
-                "🎯 全球直连",
-                "🚀 手动切换",
-            ]
+            item["proxies"] = yaml["proxy-groups"][0]["proxies"].copy()
+            item["proxies"].append("🎯 全球直连")
+            item["proxies"].append("🚀 节点选择")
 
 ```

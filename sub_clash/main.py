@@ -13,13 +13,14 @@ def update():
 
 
 @app.command()
-def update(name: str, force: bool = False, no_delete: bool = False):
+def update(name: str, force: bool = False, no_delete: bool = False, disable_txcos: bool = False):
     """
     更新Clash订阅
 
     :param name: 机场名
     :param force: 强制更新
     :param no_delete: 不删除临时文件
+    :param disable_txcos: 禁用腾讯云COS
     """
     import yaml
 
@@ -53,16 +54,22 @@ def update(name: str, force: bool = False, no_delete: bool = False):
                 default_flow_style=False,
                 sort_keys=False,
             )
-    with QproDefaultStatus("Uploading..." if user_lang != "zh" else "正在上传..."):
-        requirePackage(
-            "QuickStart_Rhy.API.TencentCloud", "TxCOS", real_name="QuickStart_Rhy"
-        )().upload(".tmp.yaml", key=config.select(name)["key"])
-    QproDefaultConsole.print(
-        QproInfoString, "更新成功，已上传至腾讯云COS:", config.select(name)["key"]
-    )
-    if no_delete:
-        return
-    os.remove(".tmp.yaml")
+    if not disable_txcos:
+        with QproDefaultStatus("Uploading..." if user_lang != "zh" else "正在上传..."):
+            requirePackage(
+                "QuickStart_Rhy.API.TencentCloud", "TxCOS", real_name="QuickStart_Rhy"
+            )().upload(".tmp.yaml", key=config.select(name)["key"])
+            QproDefaultConsole.print(
+                QproInfoString, "更新成功，已上传至腾讯云COS:", config.select(name)["key"]
+            )
+            if no_delete:
+                return
+            os.remove(".tmp.yaml")
+    else:
+        requirePackage('shutil', 'copyfile')('.tmp.yaml', f'{name}.yaml')
+        QproDefaultConsole.print(
+            QproInfoString, "更新成功，已保存至", config.select(name)["key"]
+        )
 
 
 @app.command()
