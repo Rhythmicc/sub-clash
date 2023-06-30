@@ -19,7 +19,14 @@ sub-clash
 2. 更改`rules`字典来更改规则的优先级（前提是你了解本脚本）。
 3. 修改`get_area`函数中的`regions`字典来更改地区的判断规则，越靠前的规则优先级越高。
 
-编写完成后，执行`sub-clash register <机场名>`，依据流程填写即可。
+编写完成后，执行`sub-clash register <机场名>`，依据流程填写即可。另外，如果你的机场不支持证书验证，请在157行后添加如下代码：
+
+```python
+    for i in proxies: # 为了解决某些节点证书问题，可以选择性添加此句
+        i['skip-cert-verify'] = True
+```
+
+以下为脚本模板代码：
 
 ```python
 customize_rules = {
