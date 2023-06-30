@@ -232,7 +232,8 @@ def format_proxies(yaml: dict):
         "🚀 手动切换",
     ]
     for area in _structure:
-        yaml["proxy-groups"][0]["proxies"].append(_structure[area]['name'])
+        if _structure[area]['proxies']:
+            yaml["proxy-groups"][0]["proxies"].append(_structure[area]['name'])
 
     for item in yaml["proxy-groups"]:
         if item["name"] == "🌍 国外媒体":
