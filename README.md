@@ -14,12 +14,14 @@ pip3 install git+https://github.com/Rhythmicc/sub-clash.git -U
 sub-clash
 ```
 
-在使用前，需要编写一个如下的Python脚本，用于本地的订阅转换。可以自由更改`customize_rulus`字典来添加自己的解析规则，也可以更改`rules`字典来更改规则的优先级（前提是你了解本脚本）。编写完成后，执行`sub-clash register <机场名>`，依据流程填写即可。
+在使用前，需要编写一个如下的Python脚本，用于本地的订阅转换。
+1. 更改`customize_rulus`字典来添加自己的解析规则
+2. 更改`rules`字典来更改规则的优先级（前提是你了解本脚本）。
+3. 修改`get_area`函数中的`regions`字典来更改地区的判断规则，越靠前的规则优先级越高。
 
+编写完成后，执行`sub-clash register <机场名>`，依据流程填写即可。
 
 ```python
-from .. import get_area
-
 customize_rules = {
     "🇺🇸 美国": "https://raw.githubusercontent.com/Rhythmicc/ACL4SSR/master/Clash/us.list",
     "🚀 节点选择": "https://raw.githubusercontent.com/Rhythmicc/ACL4SSR/master/Clash/no-china.list",
@@ -42,6 +44,22 @@ rules = {
     "🌍 国外媒体": "ProxyMedia.list",
     "🚀 节点选择": "ProxyGFWlist.list",
 }
+
+def get_area(name: str):
+    import re
+    
+    regions = {
+        r"(Hong Kong|HongKong|香港|🇭🇰)": "hk",
+        r"(Japan|JP|日本|🇯🇵)": "jp",
+        r"(Singapore|新加坡|🇸🇬)": "sg",
+        r"(USA|United States|美国|🇺🇸)": "us",
+        r"(Taiwan|TW|台湾|🇨🇳)": "tw",
+        r"(United Kingdom|英国|🇬🇧)": "uk"
+    }
+    for k, v in regions.items():
+        if re.search(k, name, re.IGNORECASE):
+            return v
+    return "other"
 
 def config_checker(yaml):
     try:
