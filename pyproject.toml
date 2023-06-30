@@ -1,0 +1,20 @@
+[tool.poetry]
+name = "sub-clash"
+version = "0.0.15"
+description = "A Clash subscribe convert tool"
+authors = ["Rhythmicc <rhythmlian.cn@gmail.com>"]
+license = "MIT"
+readme = "README.md"
+packages = [{include = "sub_clash"}]
+
+[tool.poetry.dependencies]
+python = "^3.8"
+qpro = "^0.12.7"
+quickstart-rhy = "^0.7.3"
+
+[tool.poetry.scripts]
+sub-clash = "sub_clash.main:main"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

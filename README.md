@@ -14,18 +14,34 @@ pip3 install git+https://github.com/Rhythmicc/sub-clash.git -U
 sub-clash
 ```
 
-- 推荐订阅转换：<https://nexconvert.com/> （选择多国家版）
+在使用前，需要编写一个如下的Python脚本，用于本地的订阅转换。可以自由更改`customize_rulus`字典来添加自己的解析规则，也可以更改`rules`字典来更改规则的优先级（前提是你了解本脚本）。编写完成后，执行`sub-clash register <机场名>`，依据流程填写即可。
 
-- 如需自定义规则，你需要编写一个 python 脚本，在其内部定义一个`format_proxies`函数。
-
-  样例：
 
 ```python
+from .. import get_area
+
 customize_rules = {
-    "🇺🇲 美国": "https://raw.githubusercontent.com/Rhythmicc/ACL4SSR/master/Clash/us.list",
+    "🇺🇸 美国": "https://raw.githubusercontent.com/Rhythmicc/ACL4SSR/master/Clash/us.list",
     "🚀 节点选择": "https://raw.githubusercontent.com/Rhythmicc/ACL4SSR/master/Clash/no-china.list",
 }
-
+rules_root = "https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/"
+rules = {
+    "🎯 全球直连": "LocalAreaNetwork.list",
+    "🎯 全球直连": "UnBan.list",
+    "🎯 全球直连": "ChinaIp.list",
+    "🎯 全球直连": "ChinaDomain.list",
+    "🎯 全球直连": "ChinaIpV6.list",
+    "🎯 全球直连": "ChinaCompanyIp.list",
+    "🛑 全球拦截": "BanAD.list",
+    "🍃 应用净化": "BanProgramAD.list",
+    "📢 谷歌FCM": "Ruleset/GoogleFCM.list",
+    "🎯 全球直连": "GoogleCN.list",
+    "Ⓜ️ 微软服务": "Microsoft.list",
+    "🍎 苹果服务": "Apple.list",
+    "📲 电报信息": "Telegram.list",
+    "🌍 国外媒体": "ProxyMedia.list",
+    "🚀 节点选择": "ProxyGFWlist.list",
+}
 
 def config_checker(yaml):
     try:
@@ -33,210 +49,190 @@ def config_checker(yaml):
         if len(proxies) < 5:
             raise Exception("节点数量少于5个")
         proxy_groups = yaml["proxy-groups"]
+        all_proxy_groups = [i['name'] for i in proxy_groups] + ['DIRECT', 'REJECT']
         for proxy_group in proxy_groups:
             for proxy in proxy_group["proxies"]:
-                if proxy not in proxies and proxy not in [
-                    "🇸🇬 狮城节点",
-                    "🇺🇲 美国节点",
-                    "🇭🇰 香港节点",
-                    "🇯🇵 日本节点",
-                    "🚀 节点选择",
-                    "♻️ 自动选择",
-                    "🎯 全球直连",
-                    "🚀 手动切换",
-                    "🌍 国外媒体",
-                    "🍎 苹果服务",
-                    "🎥 奈飞节点",
-                    "📺 爱奇艺",
-                    "📺 腾讯视频",
-                    "📺 哔哩哔哩",
-                    "📺 优酷",
-                    "📺 芒果TV",
-                    "DIRECT",
-                    "REJECT",
-                ]:
+                if proxy not in proxies and proxy not in all_proxy_groups:
                     raise Exception(f"节点 {proxy} 不存在")
     except Exception as e:
         raise Exception(f"配置文件错误: {e}")
 
 
-def add_rules(yaml):
-    import requests
+def format_config(yaml):
+    import re
+    from QuickStart_Rhy.NetTools.MultiSingleDL import multi_single_dl_content_ls
+    
+    all_urls = [item[1] for item in customize_rules.items()] + [rules_root + item[1] for item in rules.items()]
+    all_ruls = [item[0] for item in customize_rules.items()] + [item[0] for item in rules.items()]
+    contents = [i.decode() for i in multi_single_dl_content_ls(all_urls)]
 
     priority_rules = []
-    for rules in customize_rules:
-        url = customize_rules[rules]
-        content = requests.get(url).text.strip().splitlines()
+    for _id, content in enumerate(contents):
+        rule = all_ruls[_id]
+        content = content.split('\n')
         for line in content:
             _line = line.strip()
-            if not line or line.startswith("#"):
+            if not line or line.startswith("#") or line.startswith("USER-AGENT") or line.startswith("URL-REGEX"):
                 continue
-            priority_rules.append(f"{_line},{rules}")
-    yaml["rules"] = priority_rules + yaml["rules"]
-
+            if _line.endswith('no-resolve'):
+                _line = _line.split(",")
+                _line.insert(-1, rule)
+                priority_rules.append(",".join(_line))
+            else:
+                priority_rules.append(f"{_line},{rule}")
+    yaml["rules"] = priority_rules + [
+        "GEOIP,CN,🎯 全球直连",
+        "MATCH,🐟 漏网之鱼"
+    ]
+    remove_match = r"(Premium)"
+    all_proxy_names = [i['name'] for i in yaml['proxies'] if not re.search(remove_match, i['name'])]
+    yaml['proxy-groups'] = [
+        {
+            "name": "🚀 节点选择",
+            "type": "select",
+            "proxies": [
+                "♻️ 自动选择",
+                "🚀 手动切换"
+            ]
+        },
+        {
+            "name": "🚀 手动切换",
+            "type": "select",
+            "proxies": all_proxy_names
+        },
+        {
+            "name": "♻️ 自动选择",
+            "type": "url-test",
+            "url": "http://www.gstatic.com/generate_204",
+            "interval": 300,
+            "tolerance": 50,
+            "proxies": all_proxy_names
+        },
+        {
+            "name": "🌍 国外媒体",
+            "type": "select",
+            "proxies": []
+        },
+        {
+            "name": "📲 电报信息",
+            "type": "select",
+            "proxies": ["🚀 节点选择", "🎯 全球直连"] + all_proxy_names
+        },
+        {
+            "name": "Ⓜ️ 微软服务",
+            "type": "select",
+            "proxies": ["🚀 节点选择", "🎯 全球直连"] + all_proxy_names
+        },
+        {
+            "name": "🍎 苹果服务",
+            "type": "select",
+            "proxies": ["🚀 节点选择", "🎯 全球直连"] + all_proxy_names
+        },
+        {
+            "name": "📢 谷歌FCM",
+            "type": "select",
+            "proxies": ["🚀 节点选择", "🎯 全球直连"] + all_proxy_names
+        },
+        {
+            "name": "🎯 全球直连",
+            "type": "select",
+            "proxies": ["DIRECT", "🚀 节点选择", "♻️ 自动选择"]
+        },
+        {
+            "name": "🛑 全球拦截",
+            "type": "select",
+            "proxies": ["DIRECT", "REJECT"]
+        },
+        {
+            "name": "🍃 应用净化",
+            "type": "select",
+            "proxies": ["DIRECT", "REJECT"]
+        },
+        {
+            "name": "🐟 漏网之鱼",
+            "type": "select",
+            "proxies": ["🚀 节点选择", "🎯 全球直连", "♻️ 自动选择"] + all_proxy_names
+        },
+    ]
+    return all_proxy_names
 
 def format_proxies(yaml: dict):
     config_checker(yaml)
-    proxies = yaml["proxies"]
-    remove_nodes = []
-    singapore = []
+    proxies = format_config(yaml)
+    proxies = [i for i in yaml["proxies"] if i['name'] in proxies]
+    yaml["proxies"] = proxies
+    _structure = {
+        "hk": {
+            "name": "🇭🇰 香港",
+            "proxies": []
+        },
+        "jp": {
+            "name": "🇯🇵 日本",
+            "proxies": []
+        },
+        "sg": {
+            "name": "🇸🇬 狮城",
+            "proxies": []
+        },
+        "tw": {
+            "name": "🇨🇳 台湾",
+            "proxies": []
+        },
+        "uk": {
+            "name": "🇬🇧 英国",
+            "proxies": []
+        },
+        "us": {
+            "name": "🇺🇸 美国",
+            "proxies": []
+        },
+        "other": {
+            "name": "🌏 其他",
+            "proxies": []
+        }
+    }
     for proxy in proxies:
-        if "Premium" in proxy["name"]:
-            remove_nodes.append(proxy)
-            continue
-        if "Singapore" in proxy["name"]:
-            singapore.append(proxy["name"])
-    for proxy in remove_nodes:
-        # proxies.remove(proxy)
-        for proxy_group in yaml["proxy-groups"]:
-            if proxy["name"] in proxy_group["proxies"]:
-                proxy_group["proxies"].remove(proxy["name"])
-    yaml["proxies"] = [i for i in proxies if i["name"] not in remove_nodes]
-    america, hongkong, japan = None, None, None
-    for _id, item in enumerate(yaml["proxy-groups"]):
-        if item["name"] == "🇺🇲 美国节点":
-            america = [i for i in item["proxies"]]
-        elif item["name"] == "🇭🇰 香港节点":
-            hongkong = [i for i in item["proxies"]]
-        elif item["name"] == "🇯🇵 日本节点":
-            japan = [i for i in item["proxies"]]
-    # remove old proxies
-    for delele_item in ["🇺🇲 美国节点", "🇭🇰 香港节点", "🇯🇵 日本节点"]:
-        for _id, item in enumerate(yaml["proxy-groups"]):
-            if item["name"] == delele_item:
-                yaml["proxy-groups"].pop(_id)
-                break
-    if hongkong:
-        yaml["proxy-groups"].append(
-            {
-                "name": "🇭🇰 香港",
+        _structure[get_area(proxy['name'])]['proxies'].append(proxy['name'])
+    _structure.pop('other')
+    for area in _structure:
+        name = _structure[area]['name']
+        if _structure[area]['proxies']:
+            yaml['proxy-groups'].append({
+                "name": name,
                 "type": "select",
-                "proxies": ["🇭🇰 香港最佳", "🇭🇰 香港均衡"],
-            }
-        )
-    if japan:
-        yaml["proxy-groups"].append(
-            {
-                "name": "🇯🇵 日本",
-                "type": "select",
-                "proxies": ["🇯🇵 日本最佳", "🇯🇵 日本均衡"],
-            }
-        )
-    if america:
-        yaml["proxy-groups"].append(
-            {
-                "name": "🇺🇲 美国",
-                "type": "select",
-                "proxies": ["🇺🇲 美国最佳", "🇺🇲 美国均衡"],
-            }
-        )
-    if singapore:
-        yaml["proxy-groups"].append(
-            {
-                "name": "🇸🇬 狮城",
-                "type": "select",
-                "proxies": ["🇸🇬 狮城最佳", "🇸🇬 狮城均衡"],
-            }
-        )
+                "proxies": [f"{name}最佳", f"{name}均衡"]
+            })
     
-        yaml["proxy-groups"].append(
-            {
-                "interval": 300,
-                "name": "🇸🇬 狮城最佳",
-                "proxies": [i for i in singapore],
+    for area in _structure:
+        name = _structure[area]['name']
+        if _structure[area]['proxies']:
+            yaml['proxy-groups'].append({
+                "name": f"{name}最佳",
                 "type": "url-test",
                 "url": "http://www.gstatic.com/generate_204",
-            },
-        )
-    if america:
-        yaml["proxy-groups"].append(
-            {
                 "interval": 300,
-                "name": "🇺🇲 美国最佳",
-                "proxies": [i for i in america],
-                "type": "url-test",
-                "url": "http://www.gstatic.com/generate_204",
-            },
-        )
-    if hongkong:
-        yaml["proxy-groups"].append(
-            {
-                "interval": 300,
-                "name": "🇭🇰 香港最佳",
-                "proxies": [i for i in hongkong],
-                "type": "url-test",
-                "url": "http://www.gstatic.com/generate_204",
-            },
-        )
-    if japan:
-        yaml["proxy-groups"].append(
-            {
-                "interval": 300,
-                "name": "🇯🇵 日本最佳",
-                "proxies": [i for i in japan],
-                "type": "url-test",
-                "url": "http://www.gstatic.com/generate_204",
-            },
-        )
-    # load-balance
-    if singapore:
-        yaml["proxy-groups"].append(
-            {
-                "name": "🇸🇬 狮城均衡",
-                "proxies": [i for i in singapore],
+                "tolerance": 50,
+                "proxies": _structure[area]['proxies'].copy()
+            })
+    
+    for area in _structure:
+        name = _structure[area]['name']
+        if _structure[area]['proxies']:
+            yaml['proxy-groups'].append({
+                "name": f"{name}均衡",
                 "type": "load-balance",
-                "strategy": "consistent-hashing",
+                "proxies": _structure[area]['proxies'].copy(),
                 "interval": 300,
                 "url": "http://www.gstatic.com/generate_204",
-            },
-        )
-    if america:
-        yaml["proxy-groups"].append(
-            {
-                "name": "🇺🇲 美国均衡",
-                "proxies": [i for i in america],
-                "type": "load-balance",
-                "strategy": "consistent-hashing",
-                "interval": 300,
-                "url": "http://www.gstatic.com/generate_204",
-            },
-        )
-    if hongkong:
-        yaml["proxy-groups"].append(
-            {
-                "name": "🇭🇰 香港均衡",
-                "proxies": [i for i in hongkong],
-                "type": "load-balance",
-                "strategy": "consistent-hashing",
-                "interval": 300,
-                "url": "http://www.gstatic.com/generate_204",
-            },
-        )
-    if japan:
-        yaml["proxy-groups"].append(
-            {
-                "name": "🇯🇵 日本均衡",
-                "proxies": [i for i in japan],
-                "type": "load-balance",
-                "strategy": "consistent-hashing",
-                "interval": 300,
-                "url": "http://www.gstatic.com/generate_204",
-            },
-        )
+                "strategy": "consistent-hashing"
+            })
+    
     yaml["proxy-groups"][0]["proxies"] = [
         "♻️ 自动选择",
         "🚀 手动切换",
     ]
-    if hongkong:
-        yaml["proxy-groups"][0]["proxies"].append("🇭🇰 香港")
-    if japan:
-        yaml["proxy-groups"][0]["proxies"].append("🇯🇵 日本")
-    if america:
-        yaml["proxy-groups"][0]["proxies"].append("🇺🇲 美国")
-    if singapore:
-        yaml["proxy-groups"][0]["proxies"].append("🇸🇬 狮城")
-    if customize_rules:
-        add_rules(yaml)
+    for area in _structure:
+        yaml["proxy-groups"][0]["proxies"].append(_structure[area]['name'])
 
     for item in yaml["proxy-groups"]:
         if item["name"] == "🌍 国外媒体":

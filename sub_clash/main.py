@@ -50,7 +50,7 @@ def update(name: str, force: bool = False, no_delete: bool = False, disable_txco
                 clash_config,
                 f,
                 allow_unicode=True,
-                indent=2,
+                indent=4,
                 default_flow_style=False,
                 sort_keys=False,
             )
@@ -66,9 +66,9 @@ def update(name: str, force: bool = False, no_delete: bool = False, disable_txco
                 return
             os.remove(".tmp.yaml")
     else:
-        requirePackage('shutil', 'copyfile')('.tmp.yaml', f'{name}.yaml')
+        os.rename('.tmp.yaml', f'{name}.yaml')
         QproDefaultConsole.print(
-            QproInfoString, "更新成功，已保存至", config.select(name)["key"]
+            QproInfoString, "更新成功，已保存至", f'{name}.yaml'
         )
 
 
@@ -97,9 +97,13 @@ def register(name: str):
         "url": _ask({"type": "input", "message": "输入机场订阅链接"}),
         "key": _ask({"type": "input", "message": "输入腾讯云对应存储位置"}),
         "show_name": _ask({"type": "input", "message": "输入机场描述信息", "default": name}),
-        "custom_format": _ask({"type": "input", "message": "输入自定义格式化文件路径（跳过则不配置）"}),
+        "custom_format": _ask({"type": "input", "message": "输入自定义格式化文件路径"}),
     }
-    if values["custom_format"] and os.path.exists(values["custom_format"]):
+    if values["custom_format"]:
+        if not os.path.exists(values["custom_format"]):
+            from QuickProject import QproErrorString
+
+            return QproDefaultConsole.print(QproErrorString, "脚本文件不存在")
         values["custom_format"] = os.path.abspath(values["custom_format"])
         import shutil
 

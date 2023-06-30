@@ -78,3 +78,21 @@ def requirePackage(
             exit(-1)
     finally:
         return eval(f"{module if module else pname}")
+
+
+# 基于节点名称区分地区
+def get_area(name: str):
+    import re
+    
+    regions = {
+        r"(Hong Kong|HongKong|香港|🇭🇰)": "hk",
+        r"(Japan|日本|🇯🇵)": "jp",
+        r"(Singapore|新加坡|🇸🇬)": "sg",
+        r"(USA|United States|美国|🇺🇸)": "us",
+        r"(Taiwan|台湾|🇨🇳)": "tw",
+        r"(United Kingdom|英国|🇬🇧)": "uk"
+    }
+    for k, v in regions.items():
+        if re.search(k, name, re.IGNORECASE):
+            return v
+    return "other"
