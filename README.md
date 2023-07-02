@@ -123,7 +123,7 @@ def format_config(yaml):
         {
             "name": "🚀 手动切换",
             "type": "select",
-            "proxies": all_proxy_names
+            "proxies": all_proxy_names.copy()
         },
         {
             "name": "♻️ 自动选择",
@@ -131,7 +131,7 @@ def format_config(yaml):
             "url": "http://www.gstatic.com/generate_204",
             "interval": 300,
             "tolerance": 50,
-            "proxies": all_proxy_names
+            "proxies": all_proxy_names.copy()
         },
         {
             "name": "🌍 国外媒体",
@@ -141,22 +141,22 @@ def format_config(yaml):
         {
             "name": "📲 电报信息",
             "type": "select",
-            "proxies": ["🚀 节点选择", "🎯 全球直连"] + all_proxy_names
+            "proxies": ["🚀 节点选择", "🎯 全球直连"] + all_proxy_names.copy()
         },
         {
             "name": "Ⓜ️ 微软服务",
             "type": "select",
-            "proxies": ["🚀 节点选择", "🎯 全球直连"] + all_proxy_names
+            "proxies": ["🚀 节点选择", "🎯 全球直连"] + all_proxy_names.copy()
         },
         {
             "name": "🍎 苹果服务",
             "type": "select",
-            "proxies": ["🚀 节点选择", "🎯 全球直连"] + all_proxy_names
+            "proxies": ["🚀 节点选择", "🎯 全球直连"] + all_proxy_names.copy()
         },
         {
             "name": "📢 谷歌FCM",
             "type": "select",
-            "proxies": ["🚀 节点选择", "🎯 全球直连"] + all_proxy_names
+            "proxies": ["🚀 节点选择", "🎯 全球直连"] + all_proxy_names.copy()
         },
         {
             "name": "🎯 全球直连",
@@ -176,7 +176,7 @@ def format_config(yaml):
         {
             "name": "🐟 漏网之鱼",
             "type": "select",
-            "proxies": ["🚀 节点选择", "🎯 全球直连", "♻️ 自动选择"] + all_proxy_names
+            "proxies": ["🚀 节点选择", "🎯 全球直连", "♻️ 自动选择"] + all_proxy_names.copy()
         },
     ]
     return all_proxy_names
