@@ -54,7 +54,7 @@ def update(name: str, force: bool = False, no_delete: bool = False, disable_txco
                 default_flow_style=False,
                 sort_keys=False,
             )
-    if not disable_txcos:
+    if not disable_txcos and config.select(name)["key"]:
         with QproDefaultStatus("Uploading..." if user_lang != "zh" else "正在上传..."):
             requirePackage(
                 "QuickStart_Rhy.API.TencentCloud", "TxCOS", real_name="QuickStart_Rhy"
@@ -95,7 +95,7 @@ def register(name: str):
 
     values = {
         "url": _ask({"type": "input", "message": "输入机场订阅链接"}),
-        "key": _ask({"type": "input", "message": "输入腾讯云对应存储位置"}),
+        "key": _ask({"type": "input", "message": "输入腾讯云对应存储位置（没有则留空）"}),
         "show_name": _ask({"type": "input", "message": "输入机场描述信息", "default": name}),
         "custom_format": _ask({"type": "input", "message": "输入自定义格式化文件路径"}),
     }
