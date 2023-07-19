@@ -11,6 +11,20 @@ def update():
         for i in config.get_all()
     ]
 
+@app.custom_complete("name")
+def justify():
+    return [
+        {"name": i, "icon": "✈️", "description": config.select(i)["show_name"]}
+        for i in config.get_all()
+    ]
+
+@app.custom_complete("name")
+def unregister():
+    return [
+        {"name": i, "icon": "✈️", "description": config.select(i)["show_name"]}
+        for i in config.get_all()
+    ]
+
 
 @app.command()
 def update(name: str, force: bool = False, no_delete: bool = False, disable_txcos: bool = False):
