@@ -40,26 +40,30 @@ def update(name: str, force: bool = False, no_delete: bool = False, disable_txco
 
     if os.path.exists(".tmp.yaml") and force:
         os.remove(".tmp.yaml")
+    if not (_info := config.select(name)):
+        from QuickProject import QproErrorString
+
+        return QproDefaultConsole.print(QproErrorString, "机场不存在")
 
     res = requirePackage(
         "QuickStart_Rhy.NetTools.NormalDL", "normal_dl", real_name="QuickStart_Rhy"
-    )(config.select(name)["url"], ".tmp.yaml", ignore_404=True)
+    )(_info["url"], ".tmp.yaml", ignore_404=True)
 
     if not res and not os.path.exists(".tmp.yaml"):
         from QuickProject import QproErrorString
 
         return QproDefaultConsole.print(QproErrorString, "下载失败")
 
-    with open(".tmp.yaml", "r") as f:
+    with open(".tmp.yaml", "r", encoding='utf-8') as f:
         content = f.read()
-    with open(".tmp.yaml", "w") as f:
+    with open(".tmp.yaml", "w", encoding='utf-8') as f:
         f.write(content.replace("!<str> ", ""))
 
-    if config.select(name)["custom_format"]:
-        with open(".tmp.yaml", "r") as f:
+    if _info["custom_format"]:
+        with open(".tmp.yaml", "r", encoding='utf-8') as f:
             clash_config = yaml.load(f, Loader=yaml.FullLoader)
         requirePackage(f".airports.{name}", "format_proxies")(clash_config)
-        with open(".tmp.yaml", "w") as f:
+        with open(".tmp.yaml", "w", encoding='utf-8') as f:
             yaml.dump(
                 clash_config,
                 f,
@@ -68,11 +72,11 @@ def update(name: str, force: bool = False, no_delete: bool = False, disable_txco
                 default_flow_style=False,
                 sort_keys=False,
             )
-    if not disable_txcos and config.select(name)["key"]:
+    if not disable_txcos and _info["key"]:
         with QproDefaultStatus("Uploading..." if user_lang != "zh" else "正在上传..."):
             requirePackage(
                 "QuickStart_Rhy.API.TencentCloud", "TxCOS", real_name="QuickStart_Rhy"
-            )().upload(".tmp.yaml", key=config.select(name)["key"])
+            )().upload(".tmp.yaml", key=_info["key"])
             QproDefaultConsole.print(
                 QproInfoString, "更新成功，已上传至腾讯云COS:", config.select(name)["key"]
             )
