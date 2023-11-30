@@ -111,8 +111,7 @@ def format_config(yaml):
         "GEOIP,CN,🎯 全球直连",
         "MATCH,🐟 漏网之鱼"
     ]
-    remove_match = r"(Premium)"
-    all_proxy_names = [i['name'] for i in yaml['proxies'] if not re.search(remove_match, i['name'])]
+    all_proxy_names = [i['name'] for i in yaml['proxies']]
     yaml['proxy-groups'] = [
         {
             "name": "🚀 节点选择",
