@@ -45,9 +45,12 @@ def update(name: str, force: bool = False, no_delete: bool = False, disable_txco
 
         return QproDefaultConsole.print(QproErrorString, "机场不存在")
 
+    from QuickStart_Rhy.NetTools import get_fileinfo
+    url, _, r = get_fileinfo(_info['url'])
+
     res = requirePackage(
         "QuickStart_Rhy.NetTools.NormalDL", "normal_dl", real_name="QuickStart_Rhy"
-    )(_info["url"], ".tmp.yaml", ignore_404=True)
+    )(url, ".tmp.yaml", ignore_404=True)
 
     if not res and not os.path.exists(".tmp.yaml"):
         from QuickProject import QproErrorString
@@ -62,6 +65,7 @@ def update(name: str, force: bool = False, no_delete: bool = False, disable_txco
     if _info["custom_format"]:
         with open(".tmp.yaml", "r", encoding='utf-8') as f:
             clash_config = yaml.load(f, Loader=yaml.FullLoader)
+        QproDefaultConsole.print(f".airports.{name}")
         requirePackage(f".airports.{name}", "format_proxies")(clash_config)
         with open(".tmp.yaml", "w", encoding='utf-8') as f:
             yaml.dump(
@@ -88,6 +92,7 @@ def update(name: str, force: bool = False, no_delete: bool = False, disable_txco
         QproDefaultConsole.print(
             QproInfoString, "更新成功，已保存至", f'{name}.yaml'
         )
+    return r
 
 
 @app.command()
