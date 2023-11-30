@@ -36,7 +36,7 @@ def update(name: str, force: bool = False, no_delete: bool = False, disable_txco
     :param no_delete: 不删除临时文件
     :param disable_txcos: 禁用腾讯云COS
     """
-    import yaml
+    yaml = requirePackage("yaml", real_name="PyYAML")
 
     if os.path.exists(".tmp.yaml") and force:
         os.remove(".tmp.yaml")
