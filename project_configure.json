@@ -13,8 +13,8 @@
     },
     {
       "user": "",
-      "host": "tencent",
-      "port": 26122,
+      "host": "hc-server",
+      "port": 18022,
       "path": "/usr/local/lib/python3.10/dist-packages/"
     }
   ],

@@ -45,9 +45,7 @@ def update(name: str, force: bool = False, no_delete: bool = False, disable_txco
 
         return QproDefaultConsole.print(QproErrorString, "机场不存在")
 
-    from QuickStart_Rhy.NetTools import get_fileinfo
-    url, _, r = get_fileinfo(_info['url'])
-
+    url = _info['url']
     res = requirePackage(
         "QuickStart_Rhy.NetTools.NormalDL", "normal_dl", real_name="QuickStart_Rhy"
     )(url, ".tmp.yaml", ignore_404=True)
@@ -92,7 +90,6 @@ def update(name: str, force: bool = False, no_delete: bool = False, disable_txco
         QproDefaultConsole.print(
             QproInfoString, "更新成功，已保存至", f'{name}.yaml'
         )
-    return r
 
 
 @app.command()
