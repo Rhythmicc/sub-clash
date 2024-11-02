@@ -78,3 +78,16 @@ def requirePackage(
             exit(-1)
     finally:
         return eval(f"{module if module else pname}")
+
+
+def parse_host(content: str) -> dict:
+    host = {}
+    for line in content.splitlines():
+        line = line.strip()
+        if line.startswith("#"):
+            continue
+        if not line.strip():
+            continue
+        line = line.split()
+        host[line[0]] = line[1]
+    return host

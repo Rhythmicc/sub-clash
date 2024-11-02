@@ -65,6 +65,17 @@ def update(name: str, force: bool = False, no_delete: bool = False, disable_txco
             clash_config = yaml.load(f, Loader=yaml.FullLoader)
         QproDefaultConsole.print(f".airports.{name}")
         requirePackage(f".airports.{name}", "format_proxies")(clash_config)
+        # 注入 hosts
+        clash_config['host'] = parse_host(
+            requirePackage(
+                "QuickStart_Rhy.NetTools.NormalDL",
+                "normal_dl",
+                real_name="QuickStart_Rhy",
+            )(
+                "https://raw.githubusercontent.com/maxiaof/github-hosts/refs/heads/master/hosts",
+                write_to_memory=True,
+            ).decode('utf-8')
+        )
         with open(".tmp.yaml", "w", encoding='utf-8') as f:
             yaml.dump(
                 clash_config,
