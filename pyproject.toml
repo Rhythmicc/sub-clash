@@ -1,11 +1,29 @@
+[build-system]
+requires = [ "poetry-core",]
+build-backend = "poetry.core.masonry.api"
+
 [tool.poetry]
 name = "sub-clash"
 version = "0.0.20"
 description = "A Clash subscribe convert tool"
-authors = ["Rhythmicc <rhythmlian.cn@gmail.com>"]
+authors = [ "Rhythmicc <rhythmlian.cn@gmail.com>",]
 license = "MIT"
 readme = "README.md"
-packages = [{include = "sub_clash"}]
+[[tool.poetry.packages]]
+include = "sub_clash"
+
+[tool.qpro]
+[[tool.qpro.server_targets]]
+user = "lianhaocheng"
+host = "localhost"
+port = 22
+path = "/opt/homebrew/lib/python3.11/site-packages/"
+
+[[tool.qpro.server_targets]]
+user = ""
+host = "hc-server"
+port = 18022
+path = "/usr/local/lib/python3.10/dist-packages/"
 
 [tool.poetry.dependencies]
 python = "^3.8"
@@ -15,6 +33,10 @@ quickstart-rhy = "^0.7.3"
 [tool.poetry.scripts]
 sub-clash = "sub_clash.main:main"
 
-[build-system]
-requires = ["poetry-core"]
-build-backend = "poetry.core.masonry.api"
+[tool.qpro.config]
+build = ""
+entry_point = "sub_clash/main.py"
+executable = "python3 -m sub_clash.main"
+input_file = ""
+template_root = ""
+enable_complete = true
