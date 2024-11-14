@@ -27,7 +27,7 @@ path = "/usr/local/lib/python3.10/dist-packages/"
 
 [tool.poetry.dependencies]
 python = "^3.8"
-qpro = "^0.12.7"
+qpro = "^0.13.0"
 quickstart-rhy = "^0.7.3"
 
 [tool.poetry.scripts]
