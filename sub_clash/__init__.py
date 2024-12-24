@@ -37,35 +37,27 @@ def requirePackage(
     :param not_exit: 安装后不退出
     :return: 库或模块的地址
     """
+    local_scope = {}
     try:
-        exec(f"from {pname} import {module}" if module else f"import {pname}")
+        exec((f"from {pname} import {module}" if module else f"import {pname}"), globals(), local_scope)
     except (ModuleNotFoundError, ImportError):
         if not_ask:
             return None
         if _ask(
             {
                 "type": "confirm",
-                "name": "install",
                 "message": f"""{name} require {pname + (' -> ' + module if module else '')}, confirm to install?
   {name} 依赖 {pname + (' -> ' + module if module else '')}, 是否确认安装?""",
                 "default": True,
             }
         ):
             with QproDefaultStatus("Installing..." if user_lang != "zh" else "正在安装..."):
-                st, _ = external_exec(
+                external_exec(
                     f"{set_pip} install {pname if not real_name else real_name} -U",
                     True,
                 )
-            if st:
-                QproDefaultConsole.print(
-                    QproErrorString,
-                    f"Install {pname} failed, please install it manually."
-                    if user_lang != "zh"
-                    else f"安装 {pname} 失败，请手动安装。",
-                )
-                exit(-1)
             if not_exit:
-                exec(f"from {pname} import {module}" if module else f"import {pname}")
+                exec((f"from {pname} import {module}" if module else f"import {pname}"), globals(), local_scope)
             else:
                 QproDefaultConsole.print(
                     QproInfoString,
@@ -77,7 +69,7 @@ def requirePackage(
         else:
             exit(-1)
     finally:
-        return eval(f"{module if module else pname}")
+        return local_scope.get(module if module else pname)
 
 
 def parse_host(content: str) -> dict:
